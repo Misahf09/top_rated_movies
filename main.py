@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import openai
 
 # Configuración de la página
 st.set_page_config(page_title="Análisis de Películas", page_icon="🎬", layout="wide")

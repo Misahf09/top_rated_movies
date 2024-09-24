@@ -54,3 +54,26 @@ st.pyplot(fig)
 # Mostrar los datos en una tabla
 st.subheader("Datos")
 st.dataframe(df)
+# Instanciar el cliente de OpenAI
+openai_api_key = st.secrets["OPENAI_API_KEY"]
+client = openai.OpenAI(api_key=openai_api_key)
+
+def obtener_respuesta(prompt):
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",  # Ajusta el modelo según lo que necesites
+        messages=[
+            {"role": "system", "content": """
+            Eres un financiero que trabaja para la aseguradora patito, eres experto en el área de solvencia,
+            entonces vas a responder todo desde la perspectiva de la aseguradora. Contesta siempre en español
+            en un máximo de 50 palabras.
+            """}, #Solo podemos personalizar la parte de content
+            {"role": "user", "content": prompt}
+        ]
+    )
+    output = response.choices[0].message.content
+    return output
+
+pront_user = st.text_area(label="Ingresa tu pregunta", value="", height=200)
+
+output_modelo = obtener_respuesta(pront_user)
+st.write(output_modelo)

@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 st.set_page_config(page_title="Análisis de Películas", page_icon="🎬", layout="wide")
 
 # Título de la aplicación
-st.title("Análisis de Películas Mejor Calificadas")
+st.title("Análisis de Películas Mejor Calificadas ")
 
 # Cargar los datos
 @st.cache_data

@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
+import matplotlib.pyplot as plt
 
 # Configuración de la página
 st.set_page_config(page_title="Análisis de Películas", page_icon="🎬", layout="wide")
@@ -24,32 +23,33 @@ avg_votes_by_year = df.groupby('year')['vote_average'].mean().reset_index()
 movies_count_by_year = df['year'].value_counts().sort_index().reset_index()
 movies_count_by_year.columns = ['year', 'count']
 
-# Crear la figura con subplots
-fig = make_subplots(specs=[[{"secondary_y": True}]])
+# Crear la figura con dos ejes Y
+fig, ax1 = plt.subplots(figsize=(12, 6))
 
-# Agregar la gráfica de línea para el promedio de votos
-fig.add_trace(
-    go.Scatter(x=avg_votes_by_year['year'], y=avg_votes_by_year['vote_average'], name="Promedio de votos"),
-    secondary_y=False,
-)
+# Gráfica de línea para el promedio de votos
+color = 'tab:blue'
+ax1.set_xlabel('Año')
+ax1.set_ylabel('Promedio de votos', color=color)
+ax1.plot(avg_votes_by_year['year'], avg_votes_by_year['vote_average'], color=color)
+ax1.tick_params(axis='y', labelcolor=color)
 
-# Agregar la gráfica de barras para la cantidad de películas
-fig.add_trace(
-    go.Bar(x=movies_count_by_year['year'], y=movies_count_by_year['count'], name="Cantidad de películas"),
-    secondary_y=True,
-)
+# Crear un segundo eje Y
+ax2 = ax1.twinx()
 
-# Configurar los ejes
-fig.update_layout(
-    title_text="Promedio de votos y cantidad de películas por año",
-    xaxis_title="Año",
-)
+# Gráfica de barras para la cantidad de películas
+color = 'tab:orange'
+ax2.set_ylabel('Cantidad de películas', color=color)
+ax2.bar(movies_count_by_year['year'], movies_count_by_year['count'], alpha=0.3, color=color)
+ax2.tick_params(axis='y', labelcolor=color)
 
-fig.update_yaxes(title_text="Promedio de votos", secondary_y=False)
-fig.update_yaxes(title_text="Cantidad de películas", secondary_y=True)
+# Título de la gráfica
+plt.title("Promedio de votos y cantidad de películas por año")
+
+# Ajustar el diseño
+fig.tight_layout()
 
 # Mostrar la gráfica en Streamlit
-st.plotly_chart(fig, use_container_width=True)
+st.pyplot(fig)
 
 # Mostrar los datos en una tabla
 st.subheader("Datos")
